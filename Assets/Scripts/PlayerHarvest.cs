@@ -1,19 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.SearchService;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerHarvest : MonoBehaviour
 {
     public Animator anim;
     public TreeBehaviour targetTree;
     public AnimalBehaviour targetAnimal;
-    public float playerWoodCount;
+    public int playerWoodCount;
+    public int playerMeatCount;
     public PlayerStats playerStats;
+
+    public GameObject EnterHouseText;
+
+    private bool canEnterHouse;
     // Start is called before the first frame update
     void Start()
     {
         anim = GetComponent<Animator>();
         playerStats = GetComponent<PlayerStats>();
+        canEnterHouse = false;
     }
 
     // Update is called once per frame
@@ -26,6 +34,11 @@ public class PlayerHarvest : MonoBehaviour
         if (targetAnimal != null)
         {
             AnimalChop();
+        }
+
+        if (Input.GetKeyDown(KeyCode.E) && canEnterHouse)
+        {
+            SceneManager.LoadScene("HouseScene");
         }
     }
     public void WoodChop()
@@ -42,6 +55,7 @@ public class PlayerHarvest : MonoBehaviour
         targetTree.anim.SetTrigger("isHarvesting");
         targetTree.woodCount--;
         playerWoodCount++;
+        InventorySystem.Instance.woodCount = playerWoodCount;
     }
 
     public void AnimalChop()
@@ -68,12 +82,21 @@ public class PlayerHarvest : MonoBehaviour
         if (other.CompareTag("Enemy"))
         {
             targetAnimal = other.GetComponent<AnimalBehaviour>();
-            
+        }
+        if (other.CompareTag("House"))
+        {
+            EnterHouseText.SetActive(true);
+            canEnterHouse = true;
         }
     }
     private void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Tree")){targetTree = null;}
         if (other.CompareTag("Enemy")){ targetAnimal = null;}
+        if (other.CompareTag("House"))
+        {
+            EnterHouseText.SetActive(false);
+            canEnterHouse = false;
+        }
     }
 }

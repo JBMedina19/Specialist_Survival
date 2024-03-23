@@ -9,6 +9,10 @@ public class AnimalBehaviour : MonoBehaviour
     public int damage;
     public AIBehaviour aiBehaviour;
     public ParticleSystem deathFX;
+
+    public GameObject meatDrops;
+
+    public float yOffset;
     // Start is called before the first frame update
     void Start()
     {
@@ -26,6 +30,14 @@ public class AnimalBehaviour : MonoBehaviour
             deathFX.transform.SetParent(null);
             deathFX.Play();
             Destroy(gameObject,2);
+            
+          
         }
+    }
+    private void OnDestroy()
+    {
+        //Instantiate = to spawn and object
+        //Instantiate (object to spawn,where to spawn,spawn rotation)
+        Instantiate(meatDrops, new Vector3 (transform.position.x, transform.position.y + yOffset, transform.position.z), Quaternion.identity);
     }
 }
