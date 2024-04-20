@@ -6,6 +6,8 @@ using UnityEngine.SceneManagement;
 
 public class PlayerHarvest : MonoBehaviour
 {
+    public static PlayerHarvest instance = null;
+
     public Animator anim;
     public TreeBehaviour targetTree;
     public AnimalBehaviour targetAnimal;
@@ -14,14 +16,36 @@ public class PlayerHarvest : MonoBehaviour
     public PlayerStats playerStats;
 
     public GameObject EnterHouseText;
+    public GameObject ExitHouseText;
+    public GameObject ChickenFenceText;
 
     private bool canEnterHouse;
+    private bool canExitHouse;
+    private bool canCreateChickenFence;
+
+    public GameObject ChickenFence;
+    public GameObject ChickenFenceTrigger;
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(base.gameObject);
+        }
+        else
+        {
+            Destroy(base.gameObject);
+        }
+    }
     // Start is called before the first frame update
     void Start()
     {
+        
         anim = GetComponent<Animator>();
         playerStats = GetComponent<PlayerStats>();
         canEnterHouse = false;
+        canExitHouse = false;
+        canCreateChickenFence = false;
     }
 
     // Update is called once per frame
@@ -39,6 +63,16 @@ public class PlayerHarvest : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.E) && canEnterHouse)
         {
             SceneManager.LoadScene("HouseScene");
+        }
+        if (Input.GetKeyDown(KeyCode.E) && canExitHouse)
+        {
+            SceneManager.LoadScene("OutsideScene");
+        }
+        if (Input.GetKeyDown(KeyCode.E) && InventorySystem.Instance.woodCount >= 20)
+        {
+            canCreateChickenFence = true;
+            Destroy(ChickenFenceTrigger);
+            ChickenFence.SetActive(true);
         }
     }
     public void WoodChop()
@@ -88,6 +122,15 @@ public class PlayerHarvest : MonoBehaviour
             EnterHouseText.SetActive(true);
             canEnterHouse = true;
         }
+        if (other.CompareTag("OutsideTrigger"))
+        {
+            ExitHouseText.SetActive(true);
+            canExitHouse = true;
+        }
+        if (other.CompareTag("ChickenFence"))
+        {
+            ChickenFenceText.SetActive(true);
+        }
     }
     private void OnTriggerExit(Collider other)
     {
@@ -98,5 +141,24 @@ public class PlayerHarvest : MonoBehaviour
             EnterHouseText.SetActive(false);
             canEnterHouse = false;
         }
+        if (other.CompareTag("OutsideTrigger"))
+        {
+            ExitHouseText.SetActive(false);
+            canExitHouse = false;
+        }
+        if (other.CompareTag("ChickenFence"))
+        {
+            ChickenFenceText.SetActive(false);
+        }
     }
+
+    private void OnLevelWasLoaded()
+    {
+        EnterHouseText.SetActive(false);
+        canEnterHouse = false;
+        ExitHouseText.SetActive(false);
+        canExitHouse = false;
+
+    }
+
 }

@@ -8,6 +8,11 @@ TagManager:
   - Enemy
   - MeatDrops
   - House
+  - HousePosition
+  - OutsideTrigger
+  - OutsidePosition
+  - EnvironmentAudio
+  - ChickenFence
   layers:
   - Default
   - TransparentFX

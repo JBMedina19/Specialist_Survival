@@ -21,13 +21,14 @@ public class InventorySystem : MonoBehaviour
     public int meatHealValue;
     private void Awake()
     {
-        if (Instance != null && Instance != this)
+        if (Instance == null)
         {
-            Destroy(this);
+            Instance = this;
+            DontDestroyOnLoad(base.gameObject);
         }
         else
         {
-            Instance = this;
+            Destroy(base.gameObject);
         }
     }
     // Start is called before the first frame update

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -12,17 +13,34 @@ public class PlayerMovement : MonoBehaviour
     public Animator animator;
 
     public bool isChopping;
+    public NavMeshAgent agent;
+    public AudioSource snowFootstep;
+    
     // Start is called before the first frame update
     void Start()
     {
         controller = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
+        agent = GetComponent<NavMeshAgent>();
     }
 
     // Update is called once per frame
     void Update()
     {
         PlayerControl();
+        PlayerWalkAudio();
+    }
+
+    public void PlayerWalkAudio()
+    {
+        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D))
+        {
+            snowFootstep.enabled = true;
+        }
+        else
+        {
+            snowFootstep.enabled = false;
+        }
     }
     public void PlayerControl()
     {
@@ -61,10 +79,10 @@ public class PlayerMovement : MonoBehaviour
         //MovementHandler
         controller.Move(movement * walkSpeed * Time.deltaTime);
     }
-     
-   
 
-      
 
-    }
+ 
+
+
+}
 
